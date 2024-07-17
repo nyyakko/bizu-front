@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
 import { Avatar } from 'primereact/avatar';
@@ -11,8 +11,6 @@ import Groups from './components/groups/Groups'
 import Activities from './components/groups/components/activities/Activities';
 
 import './App.css';
-
-const FIXME_avatar = "https://lh3.googleusercontent.com/a/ACg8ocK4fYjoGQEwXW-wXOcisOBqe8o_dg5mh5MlHR-CYNW53aEA0hEj=s288-c-no";
 
 export default function App()
 {
@@ -30,7 +28,7 @@ export default function App()
                 <Divider />
                 <Card>
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                        <Avatar size="large" image={FIXME_avatar} shape="circle" />
+                        <Avatar size="large" icon="pi pi-user" shape="circle" />
                         <Button label="Sair" icon="pi pi-sign-out" onClick={() => {
                             sessionStorage.removeItem("bizu-auth");
                             window.location.assign("/");

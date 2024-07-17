@@ -43,7 +43,7 @@ export default function App()
                 <span style={{fontSize: 30}}>Bizu</span>
             </div>
             <Routes>
-                <Route path="/" element={<Home />}/>
+                <Route path="/*" element={<Home />}/>
                 <Route path="/grupos" element={<Groups />}/>
                 <Route path="/grupos/:groupId/atividades" element={<Activities />}/>
             </Routes>

@@ -17,7 +17,7 @@ import 'primeflex/primeflex.css';
 
 const router = createBrowserRouter([
     {
-        path: "/",
+        path: "/*",
         element: <App />,
         loader: () => !sessionStorage.getItem("bizu-auth") ? redirect("/account/login") : null,
         children: [

@@ -5,6 +5,8 @@ import { Sidebar } from 'primereact/sidebar';
 import { Avatar } from 'primereact/avatar';
 import { Divider } from 'primereact/divider';
 import { Card } from 'primereact/card';
+import { useModals } from './contexts/ModalContext';
+import SettingsModal from './modals/SettingsModal';
 
 import Home from './components/home/Home';
 import Groups from './components/groups/Groups'
@@ -29,10 +31,16 @@ export default function App()
                 <Card>
                     <div style={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Avatar size="large" icon="pi pi-user" shape="circle" />
-                        <Button label="Sair" icon="pi pi-sign-out" onClick={() => {
-                            sessionStorage.removeItem("bizu-auth");
-                            window.location.assign("/");
-                        }} />
+                        <div style={{display: 'flex'}}>
+                            <Button icon="pi pi-cog" onClick={() => {
+                                showModal(<SettingsModal onHide={hideModal}/>)
+                            }} />
+                            <div className="ui-spacer-h-s"/>
+                            <Button icon="pi pi-sign-out" onClick={() => {
+                                sessionStorage.removeItem("bizu-auth");
+                                window.location.assign("/");
+                            }} />
+                        </div>
                     </div>
                 </Card>
             </Sidebar>

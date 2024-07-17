@@ -1,11 +1,11 @@
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import EditGroup from "./modal/EditGroup";
-import { ModalContext } from "../../contexts/ModalContext";
+import { useModals } from "../../contexts/ModalContext";
 
 import { GroupService } from "./services/GroupService";
 
@@ -14,7 +14,7 @@ import "./Groups.css"
 export default function Groups()
 {
     const groupService = useMemo(() => new GroupService(), []);
-    const { show: showModal, hide: hideModal } = useContext(ModalContext);
+    const { show: showModal, hide: hideModal } = useModals();
 
     const [groups, setGroups] = useState([]);
     const [selected, setSelected] = useState(null);

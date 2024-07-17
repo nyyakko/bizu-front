@@ -1,11 +1,11 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
 import { UserService } from '../services/UserService';
 import FeedbackModal from '../../../modals/FeedbackModal';
-import { ModalContext } from '../../../contexts/ModalContext';
+import { useModals } from '../../../contexts/ModalContext';
 
 import './Login.css';
 
@@ -15,7 +15,7 @@ const { WIDTH, HEIGHT } = { WIDTH: 10*FACTOR, HEIGHT: 13*FACTOR };
 export default function Login()
 {
     const userService = new UserService();
-    const { show: showModal, hide: hideModal } = useContext(ModalContext);
+    const { show: showModal, hide: hideModal } = useModals();
 
     const [user, setUser] = useState({
         name: "",

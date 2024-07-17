@@ -1,0 +1,28 @@
+.content {
+    padding: 0rem 2rem 0;
+    display: flex;
+    height: 100vh;
+}
+
+.menubar {
+    position: sticky;
+    left: 0;
+    top: 5rem;
+    height: calc(100vh - 6rem);
+    width: 100px;
+    display: flex;
+    flex: 0 0 250px;
+    overflow: auto;
+    flex-direction: column;
+}
+
+.datatable {
+    position: sticky;
+    top: 3rem;
+    padding: 2rem 2rem 0;
+    width: 100vw;
+    overflow: auto;
+    height: calc(100vh - 6rem);
+    display: flex;
+    flex-direction: column;
+}

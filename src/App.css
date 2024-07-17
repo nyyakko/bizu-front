@@ -1,0 +1,26 @@
+.masterHead {
+    height: 4rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    padding: 0rem 1rem 0;
+    justify-content: space-between;
+}
+
+.ui-spacer-s {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+.ui-spacer-m {
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.ui-spacer-l {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}

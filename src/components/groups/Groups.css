@@ -1,0 +1,15 @@
+.groups {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.groupsList {
+    position: sticky;
+    top: 5rem;
+    padding: 2rem 2rem 0;
+    height: calc(100vh - 6rem);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

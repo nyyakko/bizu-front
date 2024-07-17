@@ -15,12 +15,27 @@
     margin-bottom: 3px;
 }
 
+.ui-spacer-h-s {
+    margin-left: 3px;
+    margin-right: 3px;
+}
+
 .ui-spacer-m {
     margin-top: 7px;
     margin-bottom: 7px;
 }
 
+.ui-spacer-h-m {
+    margin-left: 7px;
+    margin-right: 7px;
+}
+
 .ui-spacer-l {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.ui-spacer-h-l {
+    margin-left: 10px;
+    margin-right: 10px;
 }

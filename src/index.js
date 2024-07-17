@@ -7,7 +7,7 @@ import App from './App';
 import Login from './components/account/login/Login'
 import Register from './components/account/register/Register'
 import Groups from './components/groups/Groups';
-import Activities from './components/groups/activities/Activities';
+import Activities from './components/groups/components/activities/Activities';
 import { ModalProvider } from './contexts/ModalContext';
 
 import './index.css';

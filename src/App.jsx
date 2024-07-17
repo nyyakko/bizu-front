@@ -8,7 +8,7 @@ import { Card } from 'primereact/card';
 
 import Home from './components/home/Home';
 import Groups from './components/groups/Groups'
-import Activities from './components/groups/activities/Activities';
+import Activities from './components/groups/components/activities/Activities';
 
 import './App.css';
 

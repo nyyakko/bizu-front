@@ -9,8 +9,8 @@ import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { ContextMenu } from 'primereact/contextmenu';
 import EditActivity, { FIXME_categories, FIXME_bimester } from './modal/EditActivity';
-import { useModals } from '../../../contexts/ModalContext';
-import FeedbackModal from '../../../modals/FeedbackModal';
+import { useModals } from '../../../../contexts/ModalContext';
+import FeedbackModal from '../../../../modals/FeedbackModal';
 
 import { ActivityService } from './services/ActivityService';
 

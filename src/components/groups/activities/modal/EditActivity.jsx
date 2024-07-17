@@ -24,11 +24,10 @@ export const FIXME_subjects = [
     'Física'
 ];
 
-export default function EditActivity({ groupId })
+export default function EditActivity({ groupId, onHide })
 {
     const activityService = new ActivityService();
 
-    const [isVisible, setVisible] = useState(true);
     const [activity, setActivity] = useState({
         groupId: undefined,
         subject: "",
@@ -39,7 +38,7 @@ export default function EditActivity({ groupId })
     });
 
     return (
-        <Dialog header="Nova Atividade" style={{width: "500px"}} visible={isVisible} onHide={() => { setVisible(!isVisible); }}>
+        <Dialog header="Nova Atividade" style={{width: "500px"}} visible={true} onHide={() => onHide ? onHide() : null}>
             <div>
                 <div>
                     <Dropdown placeholder="Matéria" value={activity.subject} onChange={(e) => setActivity({ ...activity, subject: e.value })} style={{marginRight: "10px", width: "170px"}} options={FIXME_subjects} />

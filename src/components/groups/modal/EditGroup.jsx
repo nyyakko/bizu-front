@@ -6,17 +6,16 @@ import { useMemo, useState } from "react";
 
 import { GroupService } from "../services/GroupService";
 
-export default function EditGroup({ element })
+export default function EditGroup({ element, onHide })
 {
     const groupService = useMemo(() => new GroupService(), []);
 
-    const [isVisible, setVisible] = useState(true);
     const [group, setGroup] = useState(element !== undefined ? element : {
         name: ""
     });
 
     return (
-        <Dialog header="Grupo" style={{width: "500px"}} visible={isVisible} onHide={() => setVisible(!isVisible)}>
+        <Dialog header="Grupo" style={{width: "500px"}} visible={true} onHide={() => onHide ? onHide() : null}>
             <div>
                 <InputText placeholder="Nome" value={group.name} onChange={(e) => setGroup({ ...group, name: e.target.value })} style={{marginTop: "10px", width: "calc(500px - 40px)"}} />
             </div>

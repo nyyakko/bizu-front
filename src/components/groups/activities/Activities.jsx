@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useParams } from 'react-router-dom';
-import { useMemo, useRef, useEffect, useState } from 'react';
+import { useMemo, useRef, useEffect, useState, useContext } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -8,8 +8,9 @@ import { PanelMenu } from 'primereact/panelmenu';
 import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { ContextMenu } from 'primereact/contextmenu';
-import WarningModal, { ModalRealm } from '../../../generic/modal/ModalRealm';
 import EditActivity, { FIXME_categories, FIXME_bimester } from './modal/EditActivity';
+import { ModalContext } from '../../../contexts/ModalContext';
+import FeedbackModal from '../../../modals/FeedbackModal';
 
 import { ActivityService } from './services/ActivityService';
 
@@ -35,6 +36,8 @@ function dateDifferenceToPriority(lhs, rhs)
 export default function Activities()
 {
     const activityService = useMemo(() => new ActivityService(), []);
+    const { show: showModal, hide: hideModal } = useContext(ModalContext);
+
     const { groupId } = useParams();
 
     const [activities, setActivites] = useState([]);
@@ -55,7 +58,10 @@ export default function Activities()
                 );
             })
             .catch(() =>
-                ModalRealm.show(<WarningModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => window.location.assign("/grupos")} />)
+                showModal(<FeedbackModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => { 
+                    hideModal();
+                    window.location.assign("/grupos");
+                }} />)
             );
     }, [activityService, groupId]);
 
@@ -71,7 +77,7 @@ export default function Activities()
     ];
 
     const topMenuOptions = [
-        { label: 'Nova Atividade', icon: 'pi pi-plus', command: () => ModalRealm.show(<EditActivity groupId={parseInt(groupId)} />) }
+        { label: 'Nova Atividade', icon: 'pi pi-plus', command: () => showModal(<EditActivity groupId={parseInt(groupId)} onHide={hideModal}/>) }
     ];
 
     const contextMenu = useRef(null);
@@ -116,7 +122,6 @@ export default function Activities()
                     </DataTable>
                 </div>
             </div>
-            <ModalRealm />
         </div>
     );
 }

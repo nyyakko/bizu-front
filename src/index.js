@@ -8,6 +8,7 @@ import Login from './components/account/login/Login'
 import Register from './components/account/register/Register'
 import Groups from './components/groups/Groups';
 import Activities from './components/groups/activities/Activities';
+import { ModalProvider } from './contexts/ModalContext';
 
 import './index.css';
 import 'primereact/resources/themes/mdc-dark-indigo/theme.css';
@@ -50,7 +51,9 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <PrimeReactProvider>
-        <RouterProvider router={router} />
+        <ModalProvider>
+            <RouterProvider router={router} />
+        </ModalProvider>
     </PrimeReactProvider>
 );
 

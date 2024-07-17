@@ -3,7 +3,6 @@ import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { ModalRealm } from '../../../generic/modal/ModalRealm';
 import { UserService } from '../services/UserService';
 
 import './Register.css';
@@ -35,7 +34,6 @@ export default function Register()
                 </div>
                 <Button style={{fontSize: "12px"}} label="Já possui uma conta?" link onClick={() => window.location = "/account/login"}/>
             </Card>
-            <ModalRealm />
         </div>
     );
 }

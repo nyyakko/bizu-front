@@ -1,11 +1,11 @@
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { ScrollPanel } from "primereact/scrollpanel";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { ModalRealm } from "../../generic/modal/ModalRealm";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import EditGroup from "./modal/EditGroup";
+import { ModalContext } from "../../contexts/ModalContext";
 
 import { GroupService } from "./services/GroupService";
 
@@ -14,6 +14,7 @@ import "./Groups.css"
 export default function Groups()
 {
     const groupService = useMemo(() => new GroupService(), []);
+    const { show: showModal, hide: hideModal } = useContext(ModalContext);
 
     const [groups, setGroups] = useState([]);
     const [selected, setSelected] = useState(null);
@@ -27,7 +28,7 @@ export default function Groups()
         {
             label: "Editar",
             icon: "pi pi-pencil",
-            command: () => ModalRealm.show(<EditGroup element={selected} />)
+            command: () => showModal(<EditGroup element={selected} onHide={hideModal}/>)
         },
         {
             label: "Deletar",
@@ -57,11 +58,10 @@ export default function Groups()
                 }
                 { groups.length ? <Divider /> : null }
                 <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
-                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => ModalRealm.show(<EditGroup />)} />
+                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => showModal(<EditGroup onHide={hideModal}/>)} />
                 </div>
                 </ScrollPanel>
             </div>
-            <ModalRealm />
         </div>
     );
 }

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Card } from 'primereact/card';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import WarningModal, { ModalRealm } from '../../../generic/modal/ModalRealm';
 import { UserService } from '../services/UserService';
+import FeedbackModal from '../../../modals/FeedbackModal';
+import { ModalContext } from '../../../contexts/ModalContext';
 
 import './Login.css';
 
@@ -14,6 +15,7 @@ const { WIDTH, HEIGHT } = { WIDTH: 10*FACTOR, HEIGHT: 13*FACTOR };
 export default function Login()
 {
     const userService = new UserService();
+    const { show: showModal, hide: hideModal } = useContext(ModalContext);
 
     const [user, setUser] = useState({
         name: "",
@@ -31,13 +33,12 @@ export default function Login()
                             sessionStorage.setItem("bizu-auth", result.auth);
                             window.location = "/";
                         }).catch(() => {
-                            ModalRealm.show(<WarningModal level="Aviso" messages={"Senha ou Usuário incorreto."} />);
+                            showModal(<FeedbackModal level="Aviso" messages={"Senha ou Usuário incorreto."} onHide={hideModal} />);
                         });
                     }}/>
                 </div>
                 <Button style={{fontSize: "12px"}} label="Não possui uma conta?" link onClick={() => window.location = "/account/register"}/>
             </Card>
-            <ModalRealm />
         </div>
     );
 }

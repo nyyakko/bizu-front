@@ -10,11 +10,12 @@ import { InputText } from 'primereact/inputtext';
 import { ContextMenu } from 'primereact/contextmenu';
 import EditActivity, { FIXME_categories, FIXME_bimester } from './modal/EditActivity';
 import { useModals } from '../../../../contexts/ModalContext';
-import FeedbackModal from '../../../../modals/FeedbackModal';
+import AlertModal from '../../../../modals/AlertModal';
 
 import { ActivityService } from './services/ActivityService';
 
 import "./Activities.css";
+import { Tag } from 'primereact/tag';
 
 function dateDifferenceInDays(lhs, rhs)
 {
@@ -27,21 +28,20 @@ function dateDifferenceInDays(lhs, rhs)
 function dateDifferenceToPriority(lhs, rhs)
 {
     const days = dateDifferenceInDays(lhs, rhs);
-    if (days <= 1 * 7) return 'Urgente';
-    if (days <= 2 * 7) return 'Alta';
-    if (days <= 2.5 * 7) return 'Normal';
-    if (days >= 4 * 7) return 'Baixa';
+    if (days <= 1 * 7) return { value: 'Urgente', status: 'danger' };
+    if (days <= 2 * 7) return { value: 'Alta', status: 'warning' };
+    if (days <= 2.5 * 7) return { value: 'Normal', status: 'success' };
+    if (days >= 4 * 7) return { value: 'Baixa', status: null };
 }
 
 export default function Activities()
 {
     const activityService = useMemo(() => new ActivityService(), []);
-    const { show: showModal, hide: hideModal } = useModals();
-
     const { groupId } = useParams();
-
+    const { show: showModal, hide: hideModal } = useModals();
     const [activities, setActivites] = useState([]);
     const [selectedActivity, setSelectedActivity] = useState(null);
+    const contextMenu = useRef(null);
 
     useEffect(() => {
         activityService.list(groupId)
@@ -58,14 +58,14 @@ export default function Activities()
                 );
             })
             .catch(() =>
-                showModal(<FeedbackModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => { 
+                showModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => {
                     hideModal();
                     window.location.assign("/grupos");
                 }} />)
             );
     }, [activityService, groupId]);
 
-    const sideMenuOptions = [
+    const sideMenubarOptions = [
         {
             label: 'Filtrar',
             items: [
@@ -76,16 +76,19 @@ export default function Activities()
         }
     ];
 
-    const topMenuOptions = [
-        { label: 'Nova Atividade', icon: 'pi pi-plus', command: () => showModal(<EditActivity groupId={parseInt(groupId)} onHide={hideModal}/>) }
+    const topMenubarOptions = [
+        {
+            label: 'Nova Atividade', icon: 'pi pi-plus', command: () => {
+                showModal(<EditActivity groupId={parseInt(groupId)} onHide={hideModal}/>);
+            }
+        }
     ];
 
-    const contextMenu = useRef(null);
     const contextMenuOptions = [
         {
-            label: "Marcar como feito",
-            icon: "pi pi-check",
-            command: () => activityService.remove(groupId, selectedActivity).then((_) => window.location.reload())
+            label: "Marcar como feito", icon: "pi pi-check", command: () => {
+                activityService.remove(groupId, selectedActivity).then((_) => window.location.reload());
+            }
         }
     ];
 
@@ -93,20 +96,20 @@ export default function Activities()
         <div className="activities">
             <div className="content" style={{}}>
                 <div className="menubar">
-                    <PanelMenu style={{width: '100%', height: 'calc(100vh - 6rem)'}} model={sideMenuOptions} />
+                    <PanelMenu style={{width: '100%', height: 'calc(100vh - 6rem)'}} model={sideMenubarOptions} />
                 </div>
                 <div className="datatable">
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Menubar style={{padding: '5px 5px'}} model={topMenuOptions} />
+                        <Menubar style={{padding: '5px 5px'}} model={topMenubarOptions} />
                         <div style={{display: 'flex', flexDirection: 'row' }}>
-                            <Button label="Procurar" style={{ marginRight: '10px'}} icon="pi pi-search" />
-                            <InputText style={{width: 'calc(30vw)'}} placeholder="Matéria..." />
+                            <Button label="Procurar" style={{ marginRight: '10px'}} icon="pi pi-search" onClick={() => alert("TBD")}/>
+                            <InputText style={{width: 'calc(30vw)'}} placeholder="Descrição..." />
                         </div>
                     </div>
                     <ContextMenu ref={contextMenu} onHide={() => setSelectedActivity(null)} model={contextMenuOptions} />
                     <DataTable
                         value={activities}
-                        onContextMenu={(e) => contextMenu.current.show(e.originalEvent) }
+                        onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}
                         contextMenuSelection={selectedActivity}
                         onContextMenuSelectionChange={(e) => setSelectedActivity(e.value)}
                         style={{marginTop: '10px'}}
@@ -114,7 +117,9 @@ export default function Activities()
                         showGridlines={true}
                     >
                         <Column field="category" header="Categoria" style={{width: '8px'}} />
-                        <Column field="priority" header="Prioridade" style={{width: '8px'}} />
+                        <Column header="Prioridade" style={{width: '8px'}} body={(activity) => {
+                            return <Tag value={activity.priority.value} severity={activity.priority.status}/>
+                        }} />
                         <Column field="bimester" header="Bimestre" style={{width: '8px'}} />
                         <Column field="due" header="Prazo" />
                         <Column field="subject" header="Matéria" />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Button } from 'primereact/button';
 import { Sidebar } from 'primereact/sidebar';
@@ -7,6 +7,7 @@ import { Divider } from 'primereact/divider';
 import { Card } from 'primereact/card';
 import { useModals } from './contexts/ModalContext';
 import SettingsModal from './modals/SettingsModal';
+import { useUser } from './contexts/UserContext';
 
 import Home from './components/home/Home';
 import Groups from './components/groups/Groups'
@@ -14,9 +15,17 @@ import Activities from './components/groups/components/activities/Activities';
 
 import './App.css';
 
+const FIXME_username = "nyyakko";
+
 export default function App()
 {
+    const { show: showModal, hide: hideModal } = useModals();
     const [sidebar, setSidebar] = useState(false);
+    const { setUser } = useUser();
+
+    useEffect(() => {
+        setUser({ name: FIXME_username });
+    }, []);
 
     return (
         <div className="app">

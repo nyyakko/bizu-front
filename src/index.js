@@ -4,11 +4,12 @@ import { PrimeReactProvider } from 'primereact/api';
 import { RouterProvider, createBrowserRouter, redirect } from 'react-router-dom';
 
 import App from './App';
-import Login from './components/account/login/Login'
-import Register from './components/account/register/Register'
+import Login from './components/account/components/login/Login'
+import Register from './components/account/components/register/Register'
 import Groups from './components/groups/Groups';
 import Activities from './components/groups/components/activities/Activities';
 import { ModalProvider } from './contexts/ModalContext';
+import { UserProvider } from './contexts/UserContext';
 
 import './index.css';
 import 'primereact/resources/themes/mdc-dark-indigo/theme.css';
@@ -51,9 +52,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <PrimeReactProvider>
-        <ModalProvider>
-            <RouterProvider router={router} />
-        </ModalProvider>
+        <UserProvider>
+            <ModalProvider>
+                <RouterProvider router={router} />
+            </ModalProvider>
+        </UserProvider>
     </PrimeReactProvider>
 );
 

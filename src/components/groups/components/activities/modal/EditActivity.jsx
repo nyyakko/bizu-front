@@ -27,7 +27,6 @@ export const FIXME_subjects = [
 export default function EditActivity({ groupId, onHide })
 {
     const activityService = new ActivityService();
-
     const [activity, setActivity] = useState({
         groupId: undefined,
         subject: "",

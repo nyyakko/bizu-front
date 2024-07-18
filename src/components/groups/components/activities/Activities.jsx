@@ -9,13 +9,13 @@ import { Menubar } from 'primereact/menubar';
 import { InputText } from 'primereact/inputtext';
 import { ContextMenu } from 'primereact/contextmenu';
 import EditActivity, { FIXME_categories, FIXME_bimester } from './modal/EditActivity';
-import { useModals } from '../../../../contexts/ModalContext';
+import { useModal } from '../../../../contexts/ModalContext';
+import { Tag } from 'primereact/tag';
 import AlertModal from '../../../../modals/AlertModal';
 
 import { ActivityService } from './services/ActivityService';
 
 import "./Activities.css";
-import { Tag } from 'primereact/tag';
 
 function dateDifferenceInDays(lhs, rhs)
 {
@@ -38,10 +38,11 @@ export default function Activities()
 {
     const activityService = useMemo(() => new ActivityService(), []);
     const { groupId } = useParams();
-    const { show: showModal, hide: hideModal } = useModals();
     const [activities, setActivites] = useState([]);
     const [selectedActivity, setSelectedActivity] = useState(null);
     const contextMenu = useRef(null);
+
+    const { handle: handleModal } = useModal();
 
     useEffect(() => {
         activityService.list(groupId)
@@ -58,8 +59,7 @@ export default function Activities()
                 );
             })
             .catch(() =>
-                showModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => {
-                    hideModal();
+                handleModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => {
                     window.location.assign("/grupos");
                 }} />)
             );
@@ -79,7 +79,7 @@ export default function Activities()
     const topMenubarOptions = [
         {
             label: 'Nova Atividade', icon: 'pi pi-plus', command: () => {
-                showModal(<EditActivity groupId={parseInt(groupId)} onHide={hideModal}/>);
+                handleModal(<EditActivity groupId={parseInt(groupId)}/>);
             }
         }
     ];

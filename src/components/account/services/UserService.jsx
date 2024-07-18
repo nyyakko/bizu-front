@@ -9,7 +9,7 @@ async function digestMessage(message)
 
 export class UserService
 {
-    headers = { "Authorization": "Bearer " + sessionStorage.getItem("bizu-auth") };
+    headers = { "Authorization": `Bearer ${sessionStorage.getItem("bizu-auth")}` };
 
     async add(user)
     {
@@ -23,18 +23,34 @@ export class UserService
         return response.json();
     }
 
+    async remove(userId)
+    {
+        let response = await fetch(`/users/deleteUser?id=${userId}`, {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                ...this.headers
+            },
+        });
+        return response.json();
+    }
+
     async find(user)
     {
         let response = await fetch(`/users/user?name=${user.name}&password=${user.password}`);
-        return (
-            (response.status === 404)
-                ? Promise.reject(new Error("Not found"))
-                : response.json()
-        );
+        return response.json();
     }
 
-    async remove(groupId, activity)
+    async update(userId, user)
     {
-        console.error("UserService::remove: TBD");
+        let response = await fetch(`/users/user?id=${userId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...this.headers
+            },
+            body: JSON.stringify(user)
+        });
+        return response.json();
     }
 };

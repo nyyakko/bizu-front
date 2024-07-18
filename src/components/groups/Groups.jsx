@@ -5,7 +5,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
 import EditGroup from "./modals/EditGroup";
-import { useModals } from "../../contexts/ModalContext";
+import { useModal } from "../../contexts/ModalContext";
+import { useNavigate } from "react-router";
 
 import { GroupService } from "./services/GroupService";
 
@@ -13,8 +14,9 @@ import "./Groups.css"
 
 export default function Groups()
 {
+    const navigate = useNavigate();
     const groupService = useMemo(() => new GroupService(), []);
-    const { show: showModal, hide: hideModal } = useModals();
+    const { handle: handleModal } = useModal();
     const [groups, setGroups] = useState([]);
     const [selected, setSelected] = useState(null);
     const contextMenu = useRef(null);
@@ -27,7 +29,7 @@ export default function Groups()
         {
             label: "Editar",
             icon: "pi pi-pencil",
-            command: () => showModal(<EditGroup element={selected} onHide={hideModal}/>)
+            command: () => handleModal(<EditGroup element={selected}/>)
         },
         {
             label: "Deletar",
@@ -49,7 +51,7 @@ export default function Groups()
                                     contextMenu.current.show(e);
                                     setSelected(group);
                                 }}>
-                                    <Button label="Atividades" onClick={() => window.location = `grupos/${group.id}/atividades`} />
+                                    <Button label="Atividades" onClick={() => navigate(`${group.id}/atividades`)} />
                                 </Card>
                             </div>
                         );
@@ -57,7 +59,7 @@ export default function Groups()
                 }
                 { groups.length ? <Divider /> : null }
                 <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
-                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => showModal(<EditGroup onHide={hideModal}/>)} />
+                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => handleModal(<EditGroup onHide={handleModal}/>)} />
                 </div>
                 </ScrollPanel>
             </div>

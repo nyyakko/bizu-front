@@ -3,19 +3,22 @@ import { Dialog } from "primereact/dialog";
 import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
 import { useMemo, useState } from "react";
+import { useModal } from "../../../contexts/ModalContext";
+import { createPortal } from "react-dom";
 
 import { GroupService } from "../services/GroupService";
 
-export default function EditGroup({ element, onHide })
+export default function EditGroup({ element })
 {
     const groupService = useMemo(() => new GroupService(), []);
-
     const [group, setGroup] = useState(element !== undefined ? element : {
         name: ""
     });
 
-    return (
-        <Dialog header="Grupo" style={{width: "500px"}} visible={true} onHide={() => onHide ? onHide() : null}>
+    const {handle, visible} = useModal();
+
+    return createPortal((
+        <Dialog header="Grupo" style={{width: "500px"}} visible={visible} onHide={() => handle()}>
             <div>
                 <InputText placeholder="Nome" value={group.name} onChange={(e) => setGroup({ ...group, name: e.target.value })} style={{marginTop: "10px", width: "calc(500px - 40px)"}} />
             </div>
@@ -35,5 +38,5 @@ export default function EditGroup({ element, onHide })
             }
             </div>
         </Dialog>
-    );
+    ), document.querySelector("#modal-root"));
 }

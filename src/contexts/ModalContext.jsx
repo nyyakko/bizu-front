@@ -4,20 +4,31 @@ export const ModalContext = React.createContext();
 
 export function ModalProvider({ children })
 {
-    const [content, setContent] = useState(null);
+    const useModal = () => {
+        const [visible, setVisible] = useState(false);
+        const [content, setContent] = useState(null);
+        const handle = (content) => {
+            setVisible(!visible);
+            if (content) setContent(content);
+        };
+        return {handle, content, visible};
+    };
+
+    const {handle, content, visible} = useModal();
 
     return (
         <ModalContext.Provider value={{
-            hide: () => setContent(null),
-            show: setContent
+            handle: handle,
+            visible: visible,
+            content: content
         }}>
-        { content ? content : null }
-        { children }
+        {content}
+        {children}
         </ModalContext.Provider>
     );
 }
 
-export function useModals()
+export function useModal()
 {
     return useContext(ModalContext);
 }

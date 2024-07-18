@@ -6,6 +6,8 @@ import { Divider } from 'primereact/divider';
 import { Dialog } from 'primereact/dialog';
 import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
+import { createPortal } from 'react-dom';
+import { useModal } from '../../../../../contexts/ModalContext';
 
 import { ActivityService } from '../services/ActivityService';
 
@@ -24,7 +26,7 @@ export const FIXME_subjects = [
     'Física'
 ];
 
-export default function EditActivity({ groupId, onHide })
+export default function EditActivity({ groupId })
 {
     const activityService = new ActivityService();
     const [activity, setActivity] = useState({
@@ -36,8 +38,10 @@ export default function EditActivity({ groupId, onHide })
         description: ""
     });
 
-    return (
-        <Dialog header="Nova Atividade" style={{width: "500px"}} visible={true} onHide={() => onHide ? onHide() : null}>
+    const {handle, visible} = useModal();
+
+    return createPortal((
+        <Dialog header="Nova Atividade" style={{width: "500px"}} visible={visible} onHide={() => handle()}>
             <div>
                 <div>
                     <Dropdown placeholder="Matéria" value={activity.subject} onChange={(e) => setActivity({ ...activity, subject: e.value })} style={{marginRight: "10px", width: "170px"}} options={FIXME_subjects} />
@@ -60,5 +64,5 @@ export default function EditActivity({ groupId, onHide })
                 } />
             </div>
         </Dialog>
-    );
+    ), document.querySelector("#modal-root"));
 }

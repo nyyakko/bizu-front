@@ -5,7 +5,9 @@ export const UserContext = React.createContext();
 export function UserProvider({ children })
 {
     const [user, setUser] = useState({
-        name: ""
+        id: undefined,
+        name: "",
+        avatar: ""
     });
 
     return (
@@ -13,7 +15,7 @@ export function UserProvider({ children })
             user: user,
             setUser: setUser
         }}>
-        { children }
+            {children}
         </UserContext.Provider>
     );
 }

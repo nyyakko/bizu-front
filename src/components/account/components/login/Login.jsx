@@ -25,23 +25,21 @@ export default function Login()
     return (
         <div className="login">
             <Card title="Entrar" style={{width: `${WIDTH}px`, height: `${HEIGHT}px` }}>
-                <form>
-                    <div style={{height: `calc(${HEIGHT}px - 6rem)`, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                        <InputText autoComplete="username" placeholder="Usuário" id="username" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{marginBottom: '10px'}} />
-                        <Password autoComplete="current-password" placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: '10px'}} />
-                        <Button label="Login" style={{width: '100px'}} onClick={() => {
-                            userService.find(form).then((result) => {
-                                sessionStorage.setItem("bizu-auth", result.auth);
-                                sessionStorage.setItem("bizu-user:id", result.id);
-                                sessionStorage.setItem("bizu-user:name", result.name);
-                                sessionStorage.setItem("bizu-user:avatar", FIXME_avatar);
-                                navigate("/");
-                            }).catch(() => {
-                                handleModal(<AlertModal level="Aviso" messages={"Senha ou Usuário incorreto."} />);
-                            });
-                        }}/>
-                    </div>
-                </form>
+                <div style={{height: `calc(${HEIGHT}px - 6rem)`, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
+                    <InputText placeholder="Usuário" id="username" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{marginBottom: '10px'}} />
+                    <Password placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: '10px'}} />
+                    <Button label="Login" style={{width: '100px'}} onClick={() => {
+                        userService.find(form).then((result) => {
+                            sessionStorage.setItem("bizu-auth", result.auth);
+                            sessionStorage.setItem("bizu-user:id", result.id);
+                            sessionStorage.setItem("bizu-user:name", result.name);
+                            sessionStorage.setItem("bizu-user:avatar", FIXME_avatar);
+                            navigate("/");
+                        }).catch(() => {
+                            handleModal(<AlertModal level="Aviso" messages={"Senha ou Usuário incorreto."} />);
+                        });
+                    }}/>
+                </div>
                 <div style={{display: 'flex', justifyContent: 'flex-end'}}>
                     <Button style={{fontSize: "12px"}} label="Não possui uma conta?" link onClick={() => window.location = "/account/register"}/>
                 </div>

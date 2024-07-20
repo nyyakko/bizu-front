@@ -21,20 +21,24 @@ export default function Groups()
     const [selected, setSelected] = useState(null);
     const contextMenu = useRef(null);
 
+    const listGroups = async () => {
+        return groupService.list().then((response) => setGroups(response));
+    };
+
     useEffect(() => {
-        groupService.list().then((response) => setGroups(response));
+        listGroups().catch((e) => console.error(e));
     }, [groupService]);
 
     const contextMenuOptions = [
         {
             label: "Editar",
             icon: "pi pi-pencil",
-            command: () => handleModal(<EditGroup element={selected}/>)
+            command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>)
         },
         {
             label: "Deletar",
             icon: "pi pi-trash",
-            command: () => groupService.remove(selected.id).then(() => window.location.reload())
+            command: () => groupService.remove(selected.id).then(() => listGroups().catch((e) => console.error(e)))
         },
     ];
 
@@ -59,7 +63,7 @@ export default function Groups()
                 }
                 { groups.length ? <Divider /> : null }
                 <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
-                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => handleModal(<EditGroup onHide={handleModal}/>)} />
+                    <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => handleModal(<EditGroup onHide={() => listGroups().catch((e) => console.error(e))}/>)} />
                 </div>
                 </ScrollPanel>
             </div>

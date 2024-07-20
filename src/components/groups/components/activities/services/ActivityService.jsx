@@ -26,6 +26,21 @@ export class ActivityService
         return response.json();
     }
 
+    async update(groupId, activityId, activity)
+    {
+        let response = await fetch(
+            `/groups/${groupId}/activity?id=${activityId}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...this.headers
+                },
+                body: JSON.stringify(activity)
+            });
+        return response.json();
+    }
+
     async list(groupId)
     {
         let response = await fetch(

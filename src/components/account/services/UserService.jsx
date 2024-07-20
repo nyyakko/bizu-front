@@ -35,22 +35,22 @@ export class UserService
         return response.json();
     }
 
-    async find(user)
-    {
-        let response = await fetch(`/users/user?name=${user.name}&password=${user.password}`);
-        return response.json();
-    }
-
     async update(userId, user)
     {
         let response = await fetch(`/users/user?id=${userId}`, {
-            method: "POST",
+            method: "PATCH",
             headers: {
                 "Content-Type": "application/json",
                 ...this.headers
             },
             body: JSON.stringify(user)
         });
+        return response.json();
+    }
+
+    async find(user)
+    {
+        let response = await fetch(`/users/user?name=${user.name}&password=${user.password}`);
         return response.json();
     }
 };

@@ -40,7 +40,7 @@ export default function Activities()
     const navigate = useNavigate();
     const { groupId } = useParams();
     const [activities, setActivites] = useState([]);
-    const [selectedActivity, setSelectedActivity] = useState(null);
+    const [selected, setSelected] = useState(null);
     const contextMenu = useRef(null);
 
     const { handle: handleModal } = useModal();
@@ -107,14 +107,15 @@ export default function Activities()
                             <InputText style={{width: 'calc(30vw)'}} placeholder="Descrição..." />
                         </div>
                     </div>
-                    <ContextMenu ref={contextMenu} onHide={() => setSelectedActivity(null)} model={[
-                        { label: "Marcar como feito", icon: "pi pi-check", command: () => activityService.remove(groupId, selectedActivity).then(() => listActivities(groupId)) }
+                    <ContextMenu ref={contextMenu} onHide={() => setSelected(null)} model={[
+                        { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditActivity element={selected} groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) },
+                        { label: "Concluído", icon: "pi pi-check", command: () => activityService.remove(groupId, selected).then(() => listActivities(groupId)) }
                     ]} />
                     <DataTable
                         value={activities}
                         onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}
-                        contextMenuSelection={selectedActivity}
-                        onContextMenuSelectionChange={(e) => setSelectedActivity(e.value)}
+                        contextMenuSelection={selected}
+                        onContextMenuSelectionChange={(e) => setSelected(e.value)}
                         style={{marginTop: '10px'}}
                         emptyMessage="Nenhuma atividade pendente."
                         showGridlines={true}

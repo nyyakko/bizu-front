@@ -66,10 +66,6 @@ export default function Activities()
         );
     }, [activityService, groupId]);
 
-    useEffect(() => {
-        return () => document.title = "Bizu";
-    }, []);
-
     return (
         <div className="activities">
             <div className="content" style={{}}>

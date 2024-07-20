@@ -29,23 +29,13 @@ export default function Groups()
         listGroups().catch((e) => console.error(e));
     }, [groupService]);
 
-    const contextMenuOptions = [
-        {
-            label: "Editar",
-            icon: "pi pi-pencil",
-            command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>)
-        },
-        {
-            label: "Deletar",
-            icon: "pi pi-trash",
-            command: () => groupService.remove(selected.id).then(() => listGroups().catch((e) => console.error(e)))
-        },
-    ];
-
     return (
         <div className="groups">
             <div className="groupsList">
-                <ContextMenu ref={contextMenu} model={contextMenuOptions} />
+                <ContextMenu ref={contextMenu} model={[
+                    { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>) },
+                    { label: "Deletar", icon: "pi pi-trash", command: () => groupService.remove(selected.id).then(() => listGroups().catch((e) => console.error(e))) },
+                ]} />
                 <ScrollPanel style={{width: '50vw', height: '85vh'}}>
                 {
                     groups.map((group) => {

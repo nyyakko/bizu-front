@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useMemo, useRef, useEffect, useState } from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Button } from 'primereact/button';
@@ -25,9 +25,9 @@ function dateDifferenceInDays(lhs, rhs)
     return Math.floor((utc2 - utc1) / millisecondsPerDay);
 }
 
-function dateDifferenceToPriority(lhs, rhs)
+function dueDateToPriority(date)
 {
-    const days = dateDifferenceInDays(lhs, rhs);
+    const days = dateDifferenceInDays(new Date(Date.now()), moment(date, "DD/MM/YYYY").toDate());
     if (days <= 1 * 7) return { value: 'Urgente', status: 'danger' };
     if (days <= 2 * 7) return { value: 'Alta', status: 'warning' };
     if (days <= 2.5 * 7) return { value: 'Normal', status: 'success' };
@@ -37,6 +37,7 @@ function dateDifferenceToPriority(lhs, rhs)
 export default function Activities()
 {
     const activityService = useMemo(() => new ActivityService(), []);
+    const navigate = useNavigate();
     const { groupId } = useParams();
     const [activities, setActivites] = useState([]);
     const [selectedActivity, setSelectedActivity] = useState(null);
@@ -44,69 +45,75 @@ export default function Activities()
 
     const { handle: handleModal } = useModal();
 
-    useEffect(() => {
-        activityService.list(groupId)
-            .then((response) => {
-                setActivites(
-                    response.map((activity) => {
-                        let result = activity;
-                        result.due = new Date(activity.due).toLocaleDateString("en-GB");
-                        result.bimester = FIXME_bimester[activity.bimester];
-                        result.category = FIXME_categories[activity.category];
-                        result.priority = dateDifferenceToPriority(new Date(Date.now()), moment(activity.due, "DD/MM/YYYY").toDate());
-                        return result;
-                    })
-                );
-            })
-            .catch(() =>
-                handleModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => {
-                    window.location.assign("/grupos");
-                }} />)
+    const listActivities = async (groupId, filterStrategy = () => true) => {
+        return activityService.list(groupId).then((response) => {
+            setActivites(
+                response.filter(filterStrategy).map((activity) => {
+                    let result = activity;
+                    result.due = new Date(activity.due).toLocaleDateString("en-GB");
+                    result.bimester = FIXME_bimester[activity.bimester];
+                    result.category = FIXME_categories[activity.category];
+                    result.priority = dueDateToPriority(activity.due);
+                    return result;
+                })
             );
+        });
+    };
+
+    useEffect(() => {
+        listActivities(groupId).catch(() =>
+            handleModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => navigate("/grupos")} />)
+        );
     }, [activityService, groupId]);
 
-    const sideMenubarOptions = [
-        {
-            label: 'Filtrar',
-            items: [
-                { label: 'Prioridade', items: [{ label: 'Urgentes' }, { label: 'Pendentes' }, { label: 'Concluídas' }], },
-                { label: 'Categoria', items: [{ label: 'Prova' }, { label: 'Trabalho' }], },
-                { label: 'Bimestre', items: [{ label: 'Primeiro' }, { label: 'Segundo' }, { label: 'Terceiro' }, { label: 'Quarto' }], }
-            ]
-        }
-    ];
-
-    const topMenubarOptions = [
-        {
-            label: 'Nova Atividade', icon: 'pi pi-plus', command: () => {
-                handleModal(<EditActivity groupId={parseInt(groupId)}/>);
-            }
-        }
-    ];
-
-    const contextMenuOptions = [
-        {
-            label: "Marcar como feito", icon: "pi pi-check", command: () => {
-                activityService.remove(groupId, selectedActivity).then((_) => window.location.reload());
-            }
-        }
-    ];
+    useEffect(() => {
+        return () => document.title = "Bizu";
+    }, []);
 
     return (
         <div className="activities">
             <div className="content" style={{}}>
                 <div className="menubar">
-                    <PanelMenu style={{width: '100%', height: 'calc(100vh - 6rem)'}} model={sideMenubarOptions} />
+                    <PanelMenu style={{width: '100%', height: 'calc(100vh - 6rem)'}} model={[
+                        {
+                            label: 'Filtrar',
+                            items: [
+                                { label: 'Prioridade', items: [
+                                    { label: 'Todas', command: () => listActivities(groupId) },
+                                    { label: 'Urgente', command: () => listActivities(groupId, (activity) => dueDateToPriority(new Date(activity.due).toLocaleDateString("en-GB")).value === 'Urgente') },
+                                    { label: 'Alta', command: () => listActivities(groupId, (activity) => dueDateToPriority(new Date(activity.due).toLocaleDateString("en-GB")).value === 'Alta') },
+                                    { label: 'Normal', command: () => listActivities(groupId, (activity) => dueDateToPriority(new Date(activity.due).toLocaleDateString("en-GB")).value === 'Normal') },
+                                    { label: 'Baixa', command: () => listActivities(groupId, (activity) => dueDateToPriority(new Date(activity.due).toLocaleDateString("en-GB")).value === 'Baixa') }
+                                ]},
+                                { label: 'Categoria', items: [
+                                    { label: 'Todas', command: () => listActivities(groupId) },
+                                    { label: 'Prova', command: () => listActivities(groupId, (activity) => FIXME_categories[activity.category] === 'Prova') },
+                                    { label: 'Trabalho', command: () => listActivities(groupId, (activity) => FIXME_categories[activity.category] === 'Trabalho') }
+                                ]},
+                                { label: 'Bimestre', items: [
+                                    { label: 'Todos', command: () => listActivities(groupId) },
+                                    { label: 'Primeiro', command: () => listActivities(groupId, (activity) => FIXME_bimester[activity.bimester] === 'Primeiro') },
+                                    { label: 'Segundo', command: () => listActivities(groupId, (activity) => FIXME_bimester[activity.bimester] === 'Segundo') },
+                                    { label: 'Terceiro', command: () => listActivities(groupId, (activity) => FIXME_bimester[activity.bimester] === 'Terceiro') },
+                                    { label: 'Quarto', command: () => listActivities(groupId, (activity) => FIXME_bimester[activity.bimester] === 'Quarto') }
+                                ]}
+                            ]
+                        }
+                    ]} />
                 </div>
                 <div className="datatable">
                     <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
-                        <Menubar style={{padding: '5px 5px'}} model={topMenubarOptions} />
+                        <Menubar style={{padding: '5px 5px'}} model={[
+                            { label: 'Nova Atividade', icon: 'pi pi-plus', command: () => handleModal(<EditActivity groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) }
+                        ]} />
                         <div style={{display: 'flex', flexDirection: 'row' }}>
                             <Button label="Procurar" style={{ marginRight: '10px'}} icon="pi pi-search" onClick={() => alert("TBD")}/>
                             <InputText style={{width: 'calc(30vw)'}} placeholder="Descrição..." />
                         </div>
                     </div>
-                    <ContextMenu ref={contextMenu} onHide={() => setSelectedActivity(null)} model={contextMenuOptions} />
+                    <ContextMenu ref={contextMenu} onHide={() => setSelectedActivity(null)} model={[
+                        { label: "Marcar como feito", icon: "pi pi-check", command: () => activityService.remove(groupId, selectedActivity).then(() => listActivities(groupId)) }
+                    ]} />
                     <DataTable
                         value={activities}
                         onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}
@@ -117,9 +124,7 @@ export default function Activities()
                         showGridlines={true}
                     >
                         <Column field="category" header="Categoria" style={{width: '8px'}} />
-                        <Column header="Prioridade" style={{width: '8px'}} body={(activity) => {
-                            return <Tag value={activity.priority.value} severity={activity.priority.status}/>
-                        }} />
+                        <Column sortable={true} sortField="due" header="Prioridade" style={{width: '8px'}} body={(activity) => <Tag value={activity.priority.value} severity={activity.priority.status}/>} />
                         <Column field="bimester" header="Bimestre" style={{width: '8px'}} />
                         <Column field="due" header="Prazo" />
                         <Column field="subject" header="Matéria" />

@@ -26,7 +26,7 @@ export const FIXME_subjects = [
     'Física'
 ];
 
-export default function EditActivity({ groupId })
+export default function EditActivity({ groupId, onHide })
 {
     const activityService = new ActivityService();
     const [activity, setActivity] = useState({
@@ -53,15 +53,18 @@ export default function EditActivity({ groupId })
             </div>
             <Divider />
             <div style={{display: "flex", justifyContent: "right"}}>
-                <Button label="Salvar" icon="pi pi-check" onClick={() =>
+                <Button label="Salvar" icon="pi pi-check" onClick={() => {
                     activityService.add(groupId, {
                         subject: activity.subject,
                         bimester: FIXME_bimester.indexOf(activity.bimester),
                         category: FIXME_categories.indexOf(activity.category),
                         due: moment(activity.due, "DD/MM/YYYY").toDate().getTime(),
                         description: activity.description
-                    }).then(() => window.location.reload())
-                } />
+                    }).then(() => {
+                        if (onHide) onHide();
+                        handle();
+                    });
+                }} />
             </div>
         </Dialog>
     ), document.querySelector("#modal-root"));

@@ -2,7 +2,7 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { Divider } from "primereact/divider";
 import { InputText } from "primereact/inputtext";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useModal } from "../../../contexts/ModalContext";
 import { createPortal } from "react-dom";
 
@@ -11,9 +11,13 @@ import { GroupService } from "../services/GroupService";
 export default function EditGroup({ element, onHide })
 {
     const groupService = useMemo(() => new GroupService(), []);
-    const [group, setGroup] = useState(element !== undefined ? element : {
+    const [group, setGroup] = useState({
         name: ""
     });
+
+    useEffect(() => {
+        element !== undefined ? setGroup(element) : null;
+    }, [element]);
 
     const {handle, visible} = useModal();
 

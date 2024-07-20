@@ -28,10 +28,10 @@ function dateDifferenceInDays(lhs, rhs)
 function dueDateToPriority(date)
 {
     const days = dateDifferenceInDays(new Date(Date.now()), moment(date, "DD/MM/YYYY").toDate());
-    if (days <= 1 * 7) return { value: 'Urgente', status: 'danger' };
-    if (days <= 2 * 7) return { value: 'Alta', status: 'warning' };
-    if (days <= 2.5 * 7) return { value: 'Normal', status: 'success' };
-    if (days >= 4 * 7) return { value: 'Baixa', status: null };
+    if (days <= 1 * 7) return { value: 'Urgente', status: 'danger', id: 3 };
+    if (days <= 2 * 7) return { value: 'Alta', status: 'warning', id: 2 };
+    if (days <= 2.5 * 7) return { value: 'Normal', status: 'success', id: 1 };
+    return { value: 'Baixa', status: null, id: 0 };
 }
 
 export default function Activities()
@@ -120,9 +120,9 @@ export default function Activities()
                         showGridlines={true}
                     >
                         <Column field="category" header="Categoria" style={{width: '8px'}} />
-                        <Column sortable={true} sortField="due" header="Prioridade" style={{width: '8px'}} body={(activity) => <Tag value={activity.priority.value} severity={activity.priority.status}/>} />
+                        <Column sortable={true} sortField="priority.id" header="Prioridade" style={{width: '8px'}} body={(activity) => <Tag value={activity.priority.value} severity={activity.priority.status}/> } />
                         <Column field="bimester" header="Bimestre" style={{width: '8px'}} />
-                        <Column field="due" header="Prazo" />
+                        <Column sortable={true} sortField="due" field="due" header="Prazo" />
                         <Column field="subject" header="Matéria" />
                         <Column field="description" header="Descrição" />
                     </DataTable>

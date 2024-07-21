@@ -36,12 +36,12 @@ export default function Groups()
                     { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>) },
                     { label: "Deletar", icon: "pi pi-trash", command: () => groupService.remove(selected.id).then(() => listGroups().catch((e) => console.error(e))) },
                 ]} />
-                <ScrollPanel style={{width: '50vw', height: '85vh'}}>
+                <ScrollPanel style={{width: "50vw", height: "85vh"}}>
                 {
                     groups.map((group) => {
                         return (
                             <div key={Math.random()} className="ui-spacer-l">
-                                <Card title={group.name} style={{width: '100%'}} onContextMenu={(e) => {
+                                <Card title={group.name} style={{width: "100%"}} onContextMenu={(e) => {
                                     contextMenu.current.show(e);
                                     setSelected(group);
                                 }}>
@@ -52,7 +52,7 @@ export default function Groups()
                     })
                 }
                 { groups.length ? <Divider /> : null }
-                <div style={{width: '100%', display: 'flex', justifyContent: 'center'}}>
+                <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
                     <Button icon="pi pi-plus" label="Novo Grupo" onClick={() => handleModal(<EditGroup onHide={() => listGroups().catch((e) => console.error(e))}/>)} />
                 </div>
                 </ScrollPanel>

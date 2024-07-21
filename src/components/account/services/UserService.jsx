@@ -9,7 +9,7 @@ async function digestMessage(message)
 
 export class UserService
 {
-    headers = { "Authorization": `Bearer ${sessionStorage.getItem("bizu-auth")}` };
+    headers = { "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("user"))?.["auth"]}` };
 
     async add(user)
     {
@@ -20,7 +20,7 @@ export class UserService
             },
             body: JSON.stringify({ ...user, auth: await digestMessage(user.name + user.password) })
         });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async remove(userId)
@@ -32,7 +32,7 @@ export class UserService
                 ...this.headers
             },
         });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async update(userId, user)
@@ -45,12 +45,21 @@ export class UserService
             },
             body: JSON.stringify(user)
         });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async find(user)
     {
         let response = await fetch(`/users/user?name=${user.name}&password=${user.password}`);
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
+    }
+
+    async self()
+    {
+        let response = await fetch(`/users/self`, {
+            method: "GET",
+            headers: this.headers,
+        });
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 };

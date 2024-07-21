@@ -4,7 +4,7 @@ import { createPortal } from "react-dom";
 
 export default function AlertModal({ level, messages, onHide })
 {
-    const {handle, visible} = useModal();
+    const { handle, visible } = useModal();
 
     return createPortal((
         <Dialog header={level} visible={visible} onHide={() => { handle(); if (onHide) onHide(); }} style={{width: "20vw"}}>

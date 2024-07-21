@@ -1,32 +1,33 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { PrimeReactProvider } from "primereact/api";
-import { RouterProvider, createBrowserRouter, redirect } from "react-router-dom";
-import { ModalProvider } from "./contexts/ModalContext";
-
-import App from "./App";
-import Login from "./components/account/components/login/Login"
-import Register from "./components/account/components/register/Register"
-import Groups from "./components/groups/Groups";
 import Activities from "./components/groups/components/activities/Activities";
-
-import "primereact/resources/themes/mdc-dark-indigo/theme.css";
-import "primeicons/primeicons.css";
-import "primeflex/primeflex.css";
+import App from "./App";
+import AuthProvider from "./contexts/UserContext";
+import Groups from "./components/groups/Groups";
+import Invite from "./components/groups/components/invite/Invite";
+import Login from "./components/account/components/login/Login"
+import { ModalProvider } from "./contexts/ModalContext";
+import { PrimeReactProvider } from "primereact/api";
+import ReactDOM from "react-dom/client";
+import React from "react";
+import Register from "./components/account/components/register/Register"
+import { RouterProvider, createBrowserRouter, redirect } from "react-router-dom";
 
 import "./index.css";
+import "primeflex/primeflex.css";
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/mdc-dark-indigo/theme.css";
 
 const router = createBrowserRouter([
     {
         path: "/*",
         element: <App />,
-        loader: () => !sessionStorage.getItem("bizu-auth") ? redirect("/account/login") : null,
+        loader: () => !sessionStorage.getItem("user") ? redirect("/account/login") : null,
         children: [
             {
                 path: "grupos",
                 element: <Groups />,
                 children: [
-                    { path: ":groupId/atividades", element: <Activities /> },
+                    { path: "convite", element: <Invite /> },
+                    { path: ":groupId/atividades", element: <Activities /> }
                 ]
             }
         ]
@@ -51,7 +52,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById("root")).render(
     <PrimeReactProvider>
         <ModalProvider>
-            <RouterProvider router={router} />
+            <AuthProvider>
+                <RouterProvider router={router} />
+            </AuthProvider>
         </ModalProvider>
     </PrimeReactProvider>
 );

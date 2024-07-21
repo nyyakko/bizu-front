@@ -1,28 +1,31 @@
+import { ActivityService } from "./components/activities/services/ActivityService";
+import { Badge } from "primereact/badge";
 import { Button } from "primereact/button";
 import { Card } from "primereact/card";
-import { ScrollPanel } from "primereact/scrollpanel";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Divider } from "primereact/divider";
 import { ContextMenu } from "primereact/contextmenu";
+import { Divider } from "primereact/divider";
+import { dueDateToPriority } from "./components/activities/Activities";
 import EditGroup from "./modals/EditGroup";
+import { GroupService } from "./services/GroupService";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ScrollPanel } from "primereact/scrollpanel";
+import { useMember } from "./contexts/MemberContext";
 import { useModal } from "../../contexts/ModalContext";
 import { useNavigate } from "react-router";
-import { Badge } from "primereact/badge";
-
-import { GroupService } from "./services/GroupService";
-import { ActivityService } from "./components/activities/services/ActivityService";
-import { dueDateToPriority } from "./components/activities/Activities";
 
 import "./Groups.css"
 
 export default function Groups()
 {
     const navigate = useNavigate();
+
     const groupService = useMemo(() => new GroupService(), []);
     const activitiesService = new ActivityService();
+
     const { handle: handleModal } = useModal();
-    const [groups, setGroups] = useState([]);
+    const { member, setGroup } = useMember();
     const [selected, setSelected] = useState(null);
+    const [groups, setGroups] = useState([]);
     const contextMenu = useRef(null);
 
     const listGroups = async () => {
@@ -55,13 +58,23 @@ export default function Groups()
         listGroups().catch((e) => console.error(e))
     }, [groupService]);
 
+    useEffect(() => {
+        setGroup(selected?.id);
+    }, [selected]);
+
     return (
         <div className="groups">
             <div className="groupsList">
                 <ContextMenu ref={contextMenu} model={[
-                    { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>) },
-                    { label: "Deletar", icon: "pi pi-trash", command: () => groupService.remove(selected.id).then(() => listGroups().catch((e) => console.error(e))) },
-                ]} />
+                    ["ROLE_OWNER", "ROLE_ADMIN"].includes(member.role) ? [
+                        { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditGroup element={selected} onHide={() => listGroups().catch((e) => console.error(e))}/>) },
+                        { label: "Criar Convite", icon: "pi pi-link", command: async () => navigator.clipboard.writeText(`${window.location.origin}/grupos/convite?key=${(await groupService.createGroupInvite(selected.id))["value"]}`) }
+                    ] : []
+                    ,
+                    !["ROLE_OWNER"].includes(member.role) ? [
+                        { label: "Sair do Grupo", icon: "pi pi-sign-out", command: () => alert("TBD") }
+                    ] : []
+                ].flat()} />
                 <ScrollPanel style={{width: "50vw", height: "85vh"}}>
                 { groups }
                 { groups.length ? <Divider /> : null }

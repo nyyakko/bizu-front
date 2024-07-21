@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Card } from "primereact/card";
 import { Button } from "primereact/button";
+import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
-import { UserService } from "../../services/UserService";
+import { useAuth } from "../../../../contexts/UserContext";
 import { useNavigate } from "react-router";
+import { UserService } from "../../services/UserService";
+import { useState } from "react";
 
 import "./Register.css";
 
@@ -16,8 +17,11 @@ const FIXME_avatar = "https://i.pinimg.com/236x/7f/e3/b9/7fe3b9cc49d2c141179b7f2
 export default function Register()
 {
     const navigate = useNavigate();
+
     const userService = new UserService();
+
     const [form, setForm] = useState({ name: "", password: "" });
+    const { login } = useAuth();
 
     return (
         <div className="register">
@@ -27,10 +31,12 @@ export default function Register()
                     <Password placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: "10px"}}/>
                     <Button label="Registrar-se" style={{width: "150px"}} onClick={() => {
                         userService.add({ name: form.name, password: form.password }).then((result) => {
-                            sessionStorage.setItem("bizu-auth", result.auth);
-                            sessionStorage.setItem("bizu-user:id", result.id);
-                            sessionStorage.setItem("bizu-user:name", result.name);
-                            sessionStorage.setItem("bizu-user:avatar", FIXME_avatar);
+                            login({
+                                id: result.id,
+                                name: result.name,
+                                auth: result.auth,
+                                avatar: FIXME_avatar
+                            });
                             navigate("/");
                         });
                     }}/>

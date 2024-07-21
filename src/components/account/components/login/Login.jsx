@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Card } from "primereact/card";
+import AlertModal from "../../../../modals/AlertModal";
 import { Button } from "primereact/button";
+import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
-import { UserService } from "../../services/UserService";
-import AlertModal from "../../../../modals/AlertModal";
+import { useAuth } from "../../../../contexts/UserContext";
 import { useModal } from "../../../../contexts/ModalContext";
 import { useNavigate } from "react-router";
+import { UserService } from "../../services/UserService";
+import { useState } from "react";
 
 import "./Login.css";
 
@@ -18,9 +19,12 @@ const FIXME_avatar = "https://i.pinimg.com/236x/7f/e3/b9/7fe3b9cc49d2c141179b7f2
 export default function Login()
 {
     const navigate = useNavigate();
+
     const userService = new UserService();
+
     const [form, setForm] = useState({ name: "", password: "" });
     const { handle: handleModal } = useModal();
+    const { login } = useAuth();
 
     return (
         <div className="login">
@@ -30,10 +34,12 @@ export default function Login()
                     <Password placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: "10px"}} />
                     <Button label="Login" style={{width: "100px"}} onClick={() => {
                         userService.find(form).then((result) => {
-                            sessionStorage.setItem("bizu-auth", result.auth);
-                            sessionStorage.setItem("bizu-user:id", result.id);
-                            sessionStorage.setItem("bizu-user:name", result.name);
-                            sessionStorage.setItem("bizu-user:avatar", FIXME_avatar);
+                            login({
+                                id: result.id,
+                                name: result.name,
+                                auth: result.auth,
+                                avatar: FIXME_avatar
+                            });
                             navigate("/");
                         }).catch(() => {
                             handleModal(<AlertModal level="Aviso" messages={"Senha ou Usuário incorreto."} />);

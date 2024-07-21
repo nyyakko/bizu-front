@@ -1,12 +1,11 @@
 import { Button } from "primereact/button";
+import { createPortal } from "react-dom";
 import { Dialog } from "primereact/dialog";
 import { Divider } from "primereact/divider";
+import { GroupService } from "../services/GroupService";
 import { InputText } from "primereact/inputtext";
 import { useEffect, useMemo, useState } from "react";
 import { useModal } from "../../../contexts/ModalContext";
-import { createPortal } from "react-dom";
-
-import { GroupService } from "../services/GroupService";
 
 export default function EditGroup({ element, onHide })
 {
@@ -30,7 +29,11 @@ export default function EditGroup({ element, onHide })
             <div style={{display: "flex", justifyContent: "right"}}>
             {
                 element !== undefined ? (
-                    <Button label="Salvar" icon="pi pi-check" onClick={() => groupService.update(group.id, group).then(() => { handle(); if (onHide) onHide(); })} />
+                    <>
+                        <Button label="Deletar" icon="pi pi-trash" onClick={() => groupService.remove(group.id).then(() => { handle(); if (onHide) onHide(); })} />
+                        <div className="ui-spacer-h-s" />
+                        <Button label="Salvar" icon="pi pi-check" onClick={() => groupService.update(group.id, group).then(() => { handle(); if (onHide) onHide(); })} />
+                    </>
                 ) : (
                     <Button label="Criar" icon="pi pi-check" onClick={() => groupService.add(group).then(() => { handle(); if (onHide) onHide(); })} />
                 )

@@ -22,8 +22,8 @@ export function ModalProvider({ children })
             visible: visible,
             content: content
         }}>
-        {content}
-        {children}
+            {content}
+            {children}
         </ModalContext.Provider>
     );
 }

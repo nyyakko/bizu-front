@@ -1,15 +1,14 @@
-import moment from "moment";
-import { useEffect, useState } from "react";
+import { ActivityService } from "../services/ActivityService";
 import { Button } from "primereact/button";
-import { InputText } from "primereact/inputtext";
-import { Divider } from "primereact/divider";
+import { createPortal } from "react-dom";
 import { Dialog } from "primereact/dialog";
+import { Divider } from "primereact/divider";
 import { Dropdown } from "primereact/dropdown";
 import { InputMask } from "primereact/inputmask";
-import { createPortal } from "react-dom";
+import { InputText } from "primereact/inputtext";
+import moment from "moment";
+import { useEffect, useState } from "react";
 import { useModal } from "../../../../../contexts/ModalContext";
-
-import { ActivityService } from "../services/ActivityService";
 
 export const FIXME_bimester = ["Primeiro", "Segundo", "Terceiro", "Quarto"];
 export const FIXME_categories = ["Prova", "Trabalho"];

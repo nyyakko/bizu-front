@@ -1,6 +1,6 @@
 export class GroupService
 {
-    headers = { "Authorization": `Bearer ${sessionStorage.getItem("bizu-auth")}` };
+    headers = { "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("user"))?.["auth"]}` };
 
     async add(group)
     {
@@ -12,7 +12,7 @@ export class GroupService
             },
             body: JSON.stringify(group)
         });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async remove(groupId)
@@ -23,7 +23,7 @@ export class GroupService
                 method: "DELETE",
                 headers: this.headers
             });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async update(groupId, group)
@@ -38,15 +38,33 @@ export class GroupService
                 },
                 body: JSON.stringify(group)
             });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async list()
     {
-        let response = await fetch("groups/", {
+        let response = await fetch("/groups/", {
             method: "GET",
             headers: this.headers
         });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
+    }
+
+    async joinGroupByInvite(key)
+    {
+        let response = await fetch(`/groups/invite?key=${key}`, {
+            method: "POST",
+            headers: this.headers
+        });
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
+    }
+
+    async createGroupInvite(groupId)
+    {
+        let response = await fetch(`/groups/${groupId}/invite`, {
+            method: "POST",
+            headers: this.headers
+        });
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 };

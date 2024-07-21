@@ -1,10 +1,10 @@
 export class ActivityService
 {
-    headers = { "Authorization": `Bearer ${sessionStorage.getItem("bizu-auth")}` };
+    headers = { "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("user"))?.["auth"]}` };
 
     async add(groupId, activity)
     {
-        let result = await fetch(`/groups/${groupId}/activity`, {
+        let response = await fetch(`/groups/${groupId}/activity`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -12,7 +12,7 @@ export class ActivityService
             },
             body: JSON.stringify({ ...activity, groupId: groupId })
         });
-        return result.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async remove(groupId, activityId)
@@ -23,7 +23,7 @@ export class ActivityService
                 method: "DELETE",
                 headers: this.headers
             });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async update(groupId, activityId, activity)
@@ -38,7 +38,7 @@ export class ActivityService
                 },
                 body: JSON.stringify(activity)
             });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 
     async list(groupId)
@@ -49,6 +49,6 @@ export class ActivityService
                 method: "GET",
                 headers: this.headers
             });
-        return response.json();
+        return response.status === 200 ? response.json() : Promise.reject(response.status);
     }
 };

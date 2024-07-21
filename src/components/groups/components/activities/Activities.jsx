@@ -1,19 +1,19 @@
-import moment from "moment";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMemo, useRef, useEffect, useState } from "react";
-import { DataTable } from "primereact/datatable";
+import { ActivityService } from "./services/ActivityService";
+import AlertModal from "../../../../modals/AlertModal";
 import { Button } from "primereact/button";
 import { Column } from "primereact/column";
-import { PanelMenu } from "primereact/panelmenu";
-import { Menubar } from "primereact/menubar";
-import { InputText } from "primereact/inputtext";
 import { ContextMenu } from "primereact/contextmenu";
+import { DataTable } from "primereact/datatable";
 import EditActivity, { FIXME_categories, FIXME_bimester } from "./modal/EditActivity";
-import { useModal } from "../../../../contexts/ModalContext";
+import { InputText } from "primereact/inputtext";
+import { Menubar } from "primereact/menubar";
+import moment from "moment";
+import { PanelMenu } from "primereact/panelmenu";
 import { Tag } from "primereact/tag";
-import AlertModal from "../../../../modals/AlertModal";
-
-import { ActivityService } from "./services/ActivityService";
+import { useMember } from "../../contexts/MemberContext";
+import { useMemo, useRef, useEffect, useState } from "react";
+import { useModal } from "../../../../contexts/ModalContext";
+import { useNavigate, useParams } from "react-router-dom";
 
 import "./Activities.css";
 
@@ -36,14 +36,20 @@ export function dueDateToPriority(date)
 
 export default function Activities()
 {
-    const activityService = useMemo(() => new ActivityService(), []);
     const navigate = useNavigate();
+
+    const activityService = useMemo(() => new ActivityService(), []);
+
+    const { handle: handleModal } = useModal();
     const { groupId } = useParams();
+    const { member, setGroup } = useMember();
     const [activities, setActivites] = useState([]);
     const [selected, setSelected] = useState(null);
     const contextMenu = useRef(null);
 
-    const { handle: handleModal } = useModal();
+    useEffect(() => {
+        setGroup(groupId);
+    }, [groupId]);
 
     const listActivities = async (groupId, filterStrategy = () => true) => {
         return activityService.list(groupId).then((response) => {
@@ -61,8 +67,9 @@ export default function Activities()
     };
 
     useEffect(() => {
-        listActivities(groupId).catch(() =>
-            handleModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => navigate("/grupos")} />)
+        listActivities(groupId).catch((e) => {
+            if (parseInt(e) === 401) handleModal(<AlertModal level="Erro" messages={"Você não é membro deste grupo."} onHide={() => navigate("/grupos")} />)
+        }
         );
     }, [activityService, groupId]);
 
@@ -99,18 +106,28 @@ export default function Activities()
                 </div>
                 <div className="datatable">
                     <div style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                        <Menubar style={{padding: "5px 5px"}} model={[
-                            { label: "Nova Atividade", icon: "pi pi-plus", command: () => handleModal(<EditActivity groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) }
-                        ]} />
+                        {
+                            ["ROLE_OWNER", "ROLE_ADMIN"].includes(member.role) ? (
+                                <Menubar style={{padding: "5px 5px"}} model={[
+                                    { label: "Nova Atividade", icon: "pi pi-plus", command: () => handleModal(<EditActivity groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) }
+                                ]} />
+                            ) : (
+                                null
+                            )
+                        }
                         <div style={{display: "flex", flexDirection: "row" }}>
                             <Button label="Procurar" style={{ marginRight: "10px"}} icon="pi pi-search" onClick={() => alert("TBD")}/>
                             <InputText style={{width: "calc(30vw)"}} placeholder="Descrição..." />
                         </div>
                     </div>
                     <ContextMenu ref={contextMenu} onHide={() => setSelected(null)} model={[
-                        { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditActivity element={selected} groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) },
-                        { label: "Concluído", icon: "pi pi-check", command: () => activityService.remove(groupId, selected.id).then(() => listActivities(groupId)) }
-                    ]} />
+                        ["ROLE_OWNER", "ROLE_ADMIN"].includes(member.role) ? [
+                            { label: "Concluído", icon: "pi pi-check", command: () => activityService.remove(groupId, selected.id).then(() => listActivities(groupId)) },
+                            { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditActivity element={selected} groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) },
+                        ] : []
+                        ,
+                        { label: "Discussão", icon: "pi pi-comments", command: () => alert("TBD") },
+                    ].flat()} />
                     <DataTable
                         value={activities}
                         onContextMenu={(e) => contextMenu.current.show(e.originalEvent)}

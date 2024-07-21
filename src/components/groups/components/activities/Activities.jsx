@@ -17,7 +17,7 @@ import { ActivityService } from "./services/ActivityService";
 
 import "./Activities.css";
 
-function dateDifferenceInDays(lhs, rhs)
+export function dateDifferenceInDays(lhs, rhs)
 {
     const millisecondsPerDay = 1000 * 60 * 60 * 24;
     const utc1 = Date.UTC(lhs.getFullYear(), lhs.getMonth(), lhs.getDate());
@@ -25,7 +25,7 @@ function dateDifferenceInDays(lhs, rhs)
     return Math.floor((utc2 - utc1) / millisecondsPerDay);
 }
 
-function dueDateToPriority(date)
+export function dueDateToPriority(date)
 {
     const days = dateDifferenceInDays(new Date(Date.now()), moment(date, "DD/MM/YYYY").toDate());
     if (days <= 1 * 7) return { value: "Urgente", status: "danger", id: 3 };

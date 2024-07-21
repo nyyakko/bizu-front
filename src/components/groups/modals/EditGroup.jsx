@@ -30,10 +30,7 @@ export default function EditGroup({ element, onHide })
             <div style={{display: "flex", justifyContent: "right"}}>
             {
                 element !== undefined ? (
-                    <Button label="Salvar" icon="pi pi-check" onClick={() => {
-                        alert("GroupService::modify: TBD");
-                        // groupService.modify(group).then(() => window.location.reload());
-                    }} />
+                    <Button label="Salvar" icon="pi pi-check" onClick={() => groupService.update(group.id, group).then(() => { handle(); if (onHide) onHide(); })} />
                 ) : (
                     <Button label="Criar" icon="pi pi-check" onClick={() => groupService.add(group).then(() => { handle(); if (onHide) onHide(); })} />
                 )

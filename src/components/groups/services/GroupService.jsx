@@ -18,10 +18,25 @@ export class GroupService
     async remove(groupId)
     {
         let response = await fetch(
-            `/groups/${groupId}/delete?id=${groupId}`,
+            `/groups/deleteGroup?id=${groupId}`,
             {
                 method: "DELETE",
                 headers: this.headers
+            });
+        return response.json();
+    }
+
+    async update(groupId, group)
+    {
+        let response = await fetch(
+            `/groups/group?id=${groupId}`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    ...this.headers
+                },
+                body: JSON.stringify(group)
             });
         return response.json();
     }

@@ -1,33 +1,33 @@
-import moment from 'moment';
-import { useEffect, useState } from 'react';
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Divider } from 'primereact/divider';
-import { Dialog } from 'primereact/dialog';
-import { Dropdown } from 'primereact/dropdown';
-import { InputMask } from 'primereact/inputmask';
-import { createPortal } from 'react-dom';
-import { useModal } from '../../../../../contexts/ModalContext';
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Divider } from "primereact/divider";
+import { Dialog } from "primereact/dialog";
+import { Dropdown } from "primereact/dropdown";
+import { InputMask } from "primereact/inputmask";
+import { createPortal } from "react-dom";
+import { useModal } from "../../../../../contexts/ModalContext";
 
-import { ActivityService } from '../services/ActivityService';
+import { ActivityService } from "../services/ActivityService";
 
-export const FIXME_bimester = ['Primeiro', 'Segundo', 'Terceiro', 'Quarto'];
-export const FIXME_categories = ['Prova', 'Trabalho'];
+export const FIXME_bimester = ["Primeiro", "Segundo", "Terceiro", "Quarto"];
+export const FIXME_categories = ["Prova", "Trabalho"];
 export const FIXME_subjects = [
-    'Arquitetura de Software',
-    'Artes',
-    'Banco de Dados',
-    'Biologia',
-    'Educação Física',
-    'Física',
-    'Geografia',
-    'História',
-    'Inglês',
-    'Matemática',
-    'Português',
-    'Programação Orientada a Objetos',
-    'Química',
-    'Sociologia'
+    "Arquitetura de Software",
+    "Artes",
+    "Banco de Dados",
+    "Biologia",
+    "Educação Física",
+    "Física",
+    "Geografia",
+    "História",
+    "Inglês",
+    "Matemática",
+    "Português",
+    "Programação Orientada a Objetos",
+    "Química",
+    "Sociologia"
 ];
 
 export default function EditActivity({ groupId, element, onHide })

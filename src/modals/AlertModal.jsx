@@ -1,6 +1,6 @@
-import { Dialog } from 'primereact/dialog';
-import { useModal } from '../contexts/ModalContext';
-import { createPortal } from 'react-dom';
+import { Dialog } from "primereact/dialog";
+import { useModal } from "../contexts/ModalContext";
+import { createPortal } from "react-dom";
 
 export default function AlertModal({ level, messages, onHide })
 {

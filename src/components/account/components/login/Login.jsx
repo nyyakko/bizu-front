@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { Card } from 'primereact/card';
-import { Button } from 'primereact/button';
-import { InputText } from 'primereact/inputtext';
-import { Password } from 'primereact/password';
-import { UserService } from '../../services/UserService';
-import AlertModal from '../../../../modals/AlertModal';
-import { useModal } from '../../../../contexts/ModalContext';
-import { useNavigate } from 'react-router';
+import { useState } from "react";
+import { Card } from "primereact/card";
+import { Button } from "primereact/button";
+import { InputText } from "primereact/inputtext";
+import { Password } from "primereact/password";
+import { UserService } from "../../services/UserService";
+import AlertModal from "../../../../modals/AlertModal";
+import { useModal } from "../../../../contexts/ModalContext";
+import { useNavigate } from "react-router";
 
-import './Login.css';
+import "./Login.css";
 
 const FACTOR = 35;
 const { WIDTH, HEIGHT } = { WIDTH: 10*FACTOR, HEIGHT: 13*FACTOR };
@@ -25,10 +25,10 @@ export default function Login()
     return (
         <div className="login">
             <Card title="Entrar" style={{width: `${WIDTH}px`, height: `${HEIGHT}px` }}>
-                <div style={{height: `calc(${HEIGHT}px - 6rem)`, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column'}}>
-                    <InputText placeholder="Usuário" id="username" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{marginBottom: '10px'}} />
-                    <Password placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: '10px'}} />
-                    <Button label="Login" style={{width: '100px'}} onClick={() => {
+                <div style={{height: `calc(${HEIGHT}px - 6rem)`, display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
+                    <InputText placeholder="Usuário" id="username" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} style={{marginBottom: "10px"}} />
+                    <Password placeholder="Senha" id="password" value={form.password} feedback={false} onChange={(e) => setForm({ ...form, password: e.target.value })} style={{marginBottom: "10px"}} />
+                    <Button label="Login" style={{width: "100px"}} onClick={() => {
                         userService.find(form).then((result) => {
                             sessionStorage.setItem("bizu-auth", result.auth);
                             sessionStorage.setItem("bizu-user:id", result.id);
@@ -40,7 +40,7 @@ export default function Login()
                         });
                     }}/>
                 </div>
-                <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                <div style={{display: "flex", justifyContent: "flex-end"}}>
                     <Button style={{fontSize: "12px"}} label="Não possui uma conta?" link onClick={() => window.location = "/account/register"}/>
                 </div>
             </Card>

@@ -109,7 +109,7 @@ export default function Activities()
                     </div>
                     <ContextMenu ref={contextMenu} onHide={() => setSelected(null)} model={[
                         { label: "Editar", icon: "pi pi-pencil", command: () => handleModal(<EditActivity element={selected} groupId={parseInt(groupId)} onHide={() => listActivities(groupId) }/>) },
-                        { label: "Concluído", icon: "pi pi-check", command: () => activityService.remove(groupId, selected).then(() => listActivities(groupId)) }
+                        { label: "Concluído", icon: "pi pi-check", command: () => activityService.remove(groupId, selected.id).then(() => listActivities(groupId)) }
                     ]} />
                     <DataTable
                         value={activities}

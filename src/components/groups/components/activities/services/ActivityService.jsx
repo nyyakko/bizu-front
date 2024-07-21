@@ -15,10 +15,10 @@ export class ActivityService
         return result.json();
     }
 
-    async remove(groupId, activity)
+    async remove(groupId, activityId)
     {
         let response = await fetch(
-            `/groups/${groupId}/deleteActivity?id=${activity.id}`,
+            `/groups/${groupId}/deleteActivity?id=${activityId}`,
             {
                 method: "DELETE",
                 headers: this.headers

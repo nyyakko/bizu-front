@@ -121,10 +121,10 @@ export default function Activities()
                         showGridlines={true}
                     >
                         <Column field="category" header="Categoria" style={{width: "8px"}} />
-                        <Column sortable={true} sortField="priority.id" header="Prioridade" style={{width: "8px"}} body={(activity) => <Tag value={activity.priority.value} severity={activity.priority.status}/> } />
+                        <Column field="subject" header="Matéria" />
                         <Column field="bimester" header="Bimestre" style={{width: "8px"}} />
                         <Column sortable={true} sortField="due" field="due" header="Prazo" />
-                        <Column field="subject" header="Matéria" />
+                        <Column sortable={true} sortField="priority.id" header="Prioridade" style={{width: "8px"}} body={(activity) => <Tag value={activity.priority.value} severity={activity.priority.status}/> } />
                         <Column field="description" header="Descrição" />
                     </DataTable>
                 </div>

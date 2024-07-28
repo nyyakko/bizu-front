@@ -47,7 +47,7 @@ export default function Login()
                     }}/>
                 </div>
                 <div style={{display: "flex", justifyContent: "flex-end"}}>
-                    <Button style={{fontSize: "12px"}} label="Não possui uma conta?" link onClick={() => window.location = "/account/register"}/>
+                    <Button style={{fontSize: "12px"}} label="Não possui uma conta?" link onClick={() => navigate("/conta/registrar")}/>
                 </div>
             </Card>
         </div>

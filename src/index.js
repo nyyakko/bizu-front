@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     {
         path: "/*",
         element: <App />,
-        loader: () => !sessionStorage.getItem("user") ? redirect("/account/login") : null,
+        loader: () => !sessionStorage.getItem("user") ? redirect("/conta/entrar") : null,
         children: [
             {
                 path: "grupos",
@@ -33,10 +33,10 @@ const router = createBrowserRouter([
         ]
     },
     {
-        path: "/account",
+        path: "/conta",
         children: [
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> }
+            { path: "entrar", element: <Login /> },
+            { path: "registrar", element: <Register /> }
         ]
     },
     {

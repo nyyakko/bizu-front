@@ -42,7 +42,7 @@ export default function Register()
                     }}/>
                 </div>
                 <div style={{display: "flex", justifyContent: "flex-end"}}>
-                    <Button style={{fontSize: "12px"}} label="Já possui uma conta?" link onClick={() => window.location = "/account/login"}/>
+                    <Button style={{fontSize: "12px"}} label="Já possui uma conta?" link onClick={() => navigate("/conta/entrar")}/>
                 </div>
             </Card>
         </div>
